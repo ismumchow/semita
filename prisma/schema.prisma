@@ -9,3 +9,70 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String // this userId is the id from the user model
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Deliverable {
+  id        String   @id @default(cuid())
+  name      String
+  items     Item[]
+  statuses  Status[]
+  followers User[]   @relation("UserDeliverableFollowers")
+  creator   User?    @relation(fields: [creatorId], references: [id])
+  creatorId String?
+}
+
+model Item {
+  id            String      @id @default(cuid())
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
+  deliverableId String
+  status        Status?     @relation(fields: [statusId], references: [id])
+  statusId      String?     @unique
+}
+
+model Status {
+  id            String      @id @default(cuid())
+  name          String      @unique
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
+  deliverableId String
+  item          Item?
+}
+
+model User {
+  id                  String        @id @default(cuid())
+  name                String?
+  email               String?       @unique
+  emailVerified       DateTime?
+  admin               Boolean       @default(false)
+  image               String?
+  username            String?       @unique
+  accounts            Account[]
+  sessions            Session[]
+  followed            Deliverable[] @relation("UserDeliverableFollowers")
+  createdDeliverables Deliverable[]
+}
