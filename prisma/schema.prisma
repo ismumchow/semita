@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,7 +9,7 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String // this userId is the id from the user model
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -38,29 +35,42 @@ model Session {
 }
 
 model Deliverable {
-  id        String   @id @default(cuid())
-  name      String
-  items     Item[]
-  statuses  Status[]
+  id   String @id @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now())
+
+  Items     Item[]
+  Statuses  Status[]
   followers User[]   @relation("UserDeliverableFollowers")
-  creator   User?    @relation(fields: [creatorId], references: [id])
-  creatorId String?
+  creatorId String
+  creator   User     @relation(fields: [creatorId], references: [id])
 }
 
 model Item {
-  id            String      @id @default(cuid())
-  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
+  name          String
+  id            String       @id @default(cuid())
+  deliverable   Deliverable  @relation(fields: [deliverableId], references: [id])
   deliverableId String
-  status        Status?     @relation(fields: [statusId], references: [id])
-  statusId      String?     @unique
+  ItemStatuses  ItemStatus[]
 }
 
 model Status {
-  id            String      @id @default(cuid())
-  name          String      @unique
-  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
+  id            String       @id @default(cuid())
+  name          String
+  deliverable   Deliverable  @relation(fields: [deliverableId], references: [id])
   deliverableId String
-  item          Item?
+  ItemStatuses  ItemStatus[]
+}
+
+model ItemStatus {
+  id       String @id @default(cuid())
+  itemId   String
+  statusId String
+  item     Item   @relation(fields: [itemId], references: [id])
+  status   Status @relation(fields: [statusId], references: [id])
+
+  @@unique([itemId, statusId])
 }
 
 model User {
