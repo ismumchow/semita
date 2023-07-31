@@ -6,7 +6,6 @@ export const DeliverableValidator = z.object({
 
 export const DeliverableNameValidator = z.object({
   deliverableId: z.string(),
-  deliverableName: z.string().min(3).max(21),
   deliverableItems: z.array(z.string().min(3).max(21)),
   deliverableStatuses: z.array(z.string().min(3).max(21)),
 })

@@ -35,43 +35,31 @@ model Session {
 }
 
 model Deliverable {
-  id   String @id @default(cuid())
-  name String @unique
-
-  createdAt DateTime @default(now())
-
-  Items     Item[]
-  Statuses  Status[]
-  followers User[]   @relation("UserDeliverableFollowers")
-  creatorId String
-  creator   User     @relation(fields: [creatorId], references: [id])
+  id         String   @id @default(cuid())
+  name       String   @unique
+  createdAt  DateTime @default(now())
+  Items      Item[]
+  Statuses   Status[]
+  creatorId  String
+  creator    User     @relation(fields: [creatorId], references: [id])
+  followers  User[]   @relation("UserDeliverableFollowers")
 }
 
 model Item {
+  id            String     @id @default(cuid())
   name          String
-  id            String       @id @default(cuid())
-  deliverable   Deliverable  @relation(fields: [deliverableId], references: [id])
+  status        String     @default("not started")
   deliverableId String
-  ItemStatuses  ItemStatus[]
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
 }
 
 model Status {
-  id            String       @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String
-  deliverable   Deliverable  @relation(fields: [deliverableId], references: [id])
   deliverableId String
-  ItemStatuses  ItemStatus[]
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
 }
 
-model ItemStatus {
-  id       String @id @default(cuid())
-  itemId   String
-  statusId String
-  item     Item   @relation(fields: [itemId], references: [id])
-  status   Status @relation(fields: [statusId], references: [id])
-
-  @@unique([itemId, statusId])
-}
 
 model User {
   id                  String        @id @default(cuid())

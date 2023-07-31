@@ -32,7 +32,6 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
   const { mutate: createDeliverable, isLoading } = useMutation({
     mutationFn: async () => {
       const payload: DeliverableNamePayload = {
-        deliverableName,
         deliverableId: deliverableId,
         deliverableItems: newItems,
         deliverableStatuses: newStatuses,
@@ -106,7 +105,7 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
             {!isAdding ? (
               <div className="flex flex-col items-center justify-center py-5 space-y-4">
                 <p className="text-xl font-medium text-gray-700 text-center">
-                  No items in{" "}
+                  No items in
                   <span className="text-rose-400">{deliverableName}</span>, yet.
                   Be the first to add one!
                 </p>

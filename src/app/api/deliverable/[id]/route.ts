@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const {
-      deliverableName,
+      deliverableId,
       deliverableItems,
       deliverableStatuses,
     } = DeliverableNameValidator.parse(body);
@@ -24,22 +24,16 @@ export async function POST(req: Request) {
       // Find the deliverable
       const deliverable = await prisma.deliverable.findFirst({
         where: {
-          name: deliverableName,
+          id: deliverableId,
         },
       });
 
       if (!deliverable) {
-        throw new Error(`Deliverable ${deliverableName} not found`);
+        throw new Error(`Deliverable not found`);
       }
 
       // Create items
-      const items = await prisma.item.createMany({
-        data: deliverableItems.map((item) => ({
-          name: item,
-          deliverableId: deliverable.id,
-        })),
-      });
-
+      
       // Create statuses
       const statuses = await prisma.status.createMany({
         data: deliverableStatuses.map((status) => ({
@@ -47,44 +41,26 @@ export async function POST(req: Request) {
           deliverableId: deliverable.id,
         })),
       });
-
-      // Fetch the created items and statuses
-      const createdItems = await prisma.item.findMany({
-        where: {
+      
+      const items = await prisma.item.createMany({
+        data: deliverableItems.map((item) => ({
+          name: item,
           deliverableId: deliverable.id,
-        },
+        })),
       });
-      const createdStatuses = await prisma.status.findMany({
-        where: {
-          deliverableId: deliverable.id,
-        },
-      });
-
-      // Create item-status connections
-      for (const item of createdItems) {
-        for (const status of createdStatuses) {
-          await prisma.itemStatus.create({
-            data: {
-              itemId: item.id,
-              statusId: status.id,
-            },
-          });
-        }
-      }
-
       return deliverable;
     });
 
     console.log(updatedDeliverable);
 
-    return new Response("Deliverable created", { status: 200 });
+    return new Response("Deliverable updated", { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 400 });
     }
 
     return new Response(
-      "Could not create deliverable at this time. Please try later",
+      "Could not update deliverable at this time. Please try later",
       { status: 500 }
     );
   }

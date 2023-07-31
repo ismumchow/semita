@@ -5,18 +5,27 @@ interface DeliverableProps {
 }
 
 const Deliverable = ({ items }: DeliverableProps) => {
-  console.log(items);
   return (
-    <div className=" border border-gray-200 rounded-lg"> 
-    <div className="container p-4 mx-auto sm:px-1 lg:px-2">
-      <ul className="space-y-4">
-        {items.map((el) => (
-          <li key={el.id} className="p-3 border border-gray-200 rounded-lg shadow-sm">
-            <h3 className="text-2xl text-gray-700 font-semibold">{el.name}</h3>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <div className="flex flex-col p-6 bg-white shadow-md rounded-md space-y-4">
+      <h2 className="text-lg font-bold text-gray-800">Deliverable Items</h2>
+      {items.map((item, index) => (
+        <div 
+          key={index}
+          className="flex items-center justify-between p-2 bg-gray-100 rounded-lg"
+        >
+          <p className="text-gray-700">{item.name}</p>
+          <span 
+            className={`inline-block px-2 py-1 text-xs font-semibold text-white 
+                        rounded-full ${
+                          item.status === 'Completed'
+                            ? 'bg-green-500'
+                            : 'bg-yellow-500'
+                        }`}
+          >
+            {item.status}
+          </span>
+        </div>
+      ))}
     </div>
   );
 };

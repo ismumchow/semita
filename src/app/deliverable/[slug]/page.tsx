@@ -18,19 +18,15 @@ const page = async ({ params }: PageProps) => {
   const deliverable = await db.deliverable.findFirst({
     where: { name: slug },
     include: {
-      Items: {
-        include: {
-          ItemStatuses: true,
-        },
-      },
+      Items: true,
       creator: true,
     },
   });
   
 
-  const isCreator = session?.user?.id === deliverable?.creator?.id;
+  console.log(deliverable?.Items)
 
-  console.log(deliverable)
+  const isCreator = session?.user?.id === deliverable?.creatorId
 
   if (!deliverable) return notFound();
 
