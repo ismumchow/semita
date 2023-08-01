@@ -3,6 +3,7 @@ import Deliverable from "@/components/Deliverable";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
+import DeliverableUpdate from "@/components/DeliverableUpdate";
 
 interface PageProps {
   params: {
@@ -10,7 +11,7 @@ interface PageProps {
   };
 }
 
-const page = async ({ params }: PageProps) => {
+const Page = async ({ params }: PageProps) => {
   const { slug } = params;
 
   const session = await getAuthSession();
@@ -18,14 +19,12 @@ const page = async ({ params }: PageProps) => {
   const deliverable = await db.deliverable.findFirst({
     where: { name: slug },
     include: {
+      Statuses: true,
       Items: true,
       creator: true,
     },
   });
   
-
-  console.log(deliverable?.Items)
-
   const isCreator = session?.user?.id === deliverable?.creatorId
 
   if (!deliverable) return notFound();
@@ -36,16 +35,22 @@ const page = async ({ params }: PageProps) => {
         Deliverable :<span className="text-rose-400"> {deliverable.name}</span>
       </h1>
 
-      {deliverable.Items.length <= 0 && isCreator ? (
+      {isCreator && deliverable.Items.length === 0 ? (
         <DeliverableCreate
           deliverableName={deliverable.name}
           deliverableId={deliverable.id}
+        />
+      ) : isCreator && deliverable.Items.length > 0 ? (
+        <DeliverableUpdate
+          deliverableId={deliverable.id}
+          items={deliverable.Items}
+          statuses={deliverable.Statuses}
         />
       ) : (
         <Deliverable items={deliverable.Items} />
       )}
     </>
   );
-};
+}
 
-export default page;
+export default Page;

@@ -20,9 +20,9 @@ export async function POST(req: Request) {
     }
 
     // Begin a transaction
-    const updatedDeliverable = await db.$transaction(async (prisma) => {
+    const updatedDeliverable = await db.$transaction(async (db) => {
       // Find the deliverable
-      const deliverable = await prisma.deliverable.findFirst({
+      const deliverable = await db.deliverable.findFirst({
         where: {
           id: deliverableId,
         },
@@ -32,17 +32,14 @@ export async function POST(req: Request) {
         throw new Error(`Deliverable not found`);
       }
 
-      // Create items
-      
-      // Create statuses
-      const statuses = await prisma.status.createMany({
+      const statuses = await db.status.createMany({
         data: deliverableStatuses.map((status) => ({
           name: status,
           deliverableId: deliverable.id,
         })),
       });
       
-      const items = await prisma.item.createMany({
+      const items = await db.item.createMany({
         data: deliverableItems.map((item) => ({
           name: item,
           deliverableId: deliverable.id,
@@ -50,8 +47,6 @@ export async function POST(req: Request) {
       });
       return deliverable;
     });
-
-    console.log(updatedDeliverable);
 
     return new Response("Deliverable updated", { status: 200 });
   } catch (error) {
