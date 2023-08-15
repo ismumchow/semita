@@ -19,10 +19,10 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(
-        "bg-white text-slate-900 antialiased light",
+        "bg-white-100 text-slate-900 antialiased light",
         inter.className
       )}>
-      <body className="min-h-screen pt-12 bg-slate-50 antialiased">
+      <body className="min-h-screen pt-8 bg-slate-50 antialiased">
         <Providers> 
         {/* @ts-ignore */}
           <Navbar />

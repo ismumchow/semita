@@ -52,7 +52,7 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
         if (err.response?.status === 422) {
           return toast({
             title: "Invalid deliverable name.",
-            description: "Please choose a name between 3 and 21 letters.",
+            description: "Please choose a name between 3 and 30 letters.",
             variant: "destructive",
           });
         }
@@ -97,16 +97,10 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
       {!itemsPushed ? (
         <>
           <div className="bg-white  rounded-lg p-5">
-            <h2 className="text-xl font-medium text-gray-700 text-center mb-5">
-              <span className=" border-rose-200 p-2 rounded-lg border-2">
-                Add items to the deliverable!
-              </span>
-            </h2>
             {!isAdding ? (
               <div className="flex flex-col items-center justify-center py-5 space-y-4">
                 <p className="text-xl font-medium text-gray-700 text-center">
-                  No items in
-                  <span className="text-rose-400">{deliverableName}</span>, yet.
+                  No items in <span className="text-blue-400">{deliverableName}</span>, yet.
                   Be the first to add one!
                 </p>
                 <Button

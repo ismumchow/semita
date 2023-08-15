@@ -4,6 +4,7 @@ import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import DeliverableUpdate from "@/components/DeliverableUpdate";
+import LargeHeading from "@/components/ui/LargeHeading";
 
 interface PageProps {
   params: {
@@ -31,10 +32,6 @@ const Page = async ({ params }: PageProps) => {
 
   return (
     <>
-      <h1 className="font-bold text-3xl md:text-4xl text-gray-700 mb-2 leading-tight">
-        Deliverable :<span className="text-rose-400"> {deliverable.name}</span>
-      </h1>
-
       {isCreator && deliverable.Items.length === 0 ? (
         <DeliverableCreate
           deliverableName={deliverable.name}
@@ -42,6 +39,7 @@ const Page = async ({ params }: PageProps) => {
         />
       ) : isCreator && deliverable.Items.length > 0 ? (
         <DeliverableUpdate
+          deliverableName={deliverable.name}
           deliverableId={deliverable.id}
           items={deliverable.Items}
           statuses={deliverable.Statuses}

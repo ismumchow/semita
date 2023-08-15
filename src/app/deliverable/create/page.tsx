@@ -26,7 +26,7 @@ const Page = () => {
       if (err instanceof AxiosError) {
         if (err.response?.status === 409) {
           return toast({
-            title: "Subreddit already exists.",
+            title: "Deliverable already exists.",
             description: "Please choose a different name.",
             variant: "destructive",
           });
@@ -34,7 +34,7 @@ const Page = () => {
 
         if (err.response?.status === 422) {
           return toast({
-            title: "Invalid subreddit name.",
+            title: "Invalid Delilverable name.",
             description: "Please choose a name between 3 and 21 letters.",
             variant: "destructive",
           });
@@ -55,6 +55,38 @@ const Page = () => {
       router.push(`/deliverable/${data}`);
     },
   });
+
+  const handleCreateDeliverable = () => {
+    if (/\s/.test(input)) {
+      // Return a toast if the input contains any white spaces
+      return toast({
+        title: "Invalid Name",
+        description: "Deliverable name cannot contain white spaces.",
+        variant: "destructive",
+      });
+    }
+
+    if (input.length < 3) {
+      // Return a toast if the input is less than three characters
+      return toast({
+        title: "Invalid Name",
+        description: "Deliverable name must be more than three characters.",
+        variant: "destructive",
+      });
+    }
+
+    if (input.length > 30) {
+      // Return a toast if the input is more than 30 characters
+      return toast({
+        title: "Invalid Name",
+        description: "Deliverable name must be less than 30 characters.",
+        variant: "destructive",
+      });
+    }
+
+    createDeliverable(); // Call the mutation to create the deliverable
+  };
+
 
   return (
     <div className="container flex items-center h-full max-w-3xl mx-auto">
@@ -88,7 +120,7 @@ const Page = () => {
           <Button
             isLoading={isLoading}
             disabled={input.length === 0}
-            onClick={() => createDeliverable()}>
+            onClick={() => handleCreateDeliverable()}>
             Create Deliverable
           </Button>
         </div>

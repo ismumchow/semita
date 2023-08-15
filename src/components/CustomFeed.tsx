@@ -2,6 +2,16 @@ import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { format } from "date-fns";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
 
 const CustomFeed = async () => {
   const session = await getAuthSession();
@@ -15,7 +25,10 @@ const CustomFeed = async () => {
     },
     include: {
       followed: {
-        include: {
+        select: {
+          name: true,
+          id: true,
+          createdAt: true, // Include the createdAt field
           creator: true,
         },
       },
@@ -23,35 +36,43 @@ const CustomFeed = async () => {
   });
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="text-align space-y-2">
-        <div className="p-4 pl-8 bg-white rounded shadow">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-3">
-            Your Followed Deliverables
-          </h2>
-          {user?.followed.length ? (
-            <div className="space-y-4">
+    <div className="flex flex-col  p-2">
+      <div className="px-8 py-2 bg-white rounded-3xl shadow-md shadow-slate-300">
+        {user?.followed.length ? (
+          <Table>
+            <TableCaption>A list of your followed deliverables.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>Creator</TableHead>
+                <TableHead>Created At</TableHead> {/* New Table Head */}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {user.followed.map((deliverable) => (
-                <Link
-                  href={`/deliverable/${deliverable.name}`}
-                  key={deliverable.id}>
-                  <span className="p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out bg-white hover:bg-pink-100 flex items-center justify-between cursor-pointer">
-                    <span className="text-lg lg:text-xl font-semibold text-rose-900">
-                      {deliverable.name}
-                    </span>
-                    <p className="text-rose-800">
-                      Created By: {deliverable.creator?.name || 'Unknown'}
-                    </p>
-                  </span>
-                </Link>
+                <TableRow key={deliverable.id}>
+                  <TableCell className="text-lg">
+                    <Link href={`/deliverable/${deliverable.name}`}>
+                      <div className="font-semibold text-blue-900 ">{deliverable.name}</div>
+                    </Link>
+                  </TableCell>
+                  <TableCell className="text-lg">
+                    <Link href={`/deliverable/view-only/${deliverable.id}`}> 
+                    {deliverable.id}
+                    </Link>
+                    </TableCell>
+                  <TableCell className="text-lg">{deliverable.creator?.name?.split(" ")[0] || "Unknown"}</TableCell>
+                 <TableCell className="text-lg">{format(deliverable.createdAt, 'MMMM d, yyyy')}</TableCell>
+                </TableRow>
               ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-lg font-light">
-              You are not following any deliverables yet.
-            </p>
-          )}
-        </div>
+            </TableBody>
+          </Table>
+        ) : (
+          <p className="text-gray-500 text-md font-light pl-4">
+            You are not following any deliverables yet.
+          </p>
+        )}
       </div>
     </div>
   );

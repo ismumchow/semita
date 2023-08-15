@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     })
 
     if (deliverableExists) {
-      return new Response('Subreddit already exists', { status: 409 })
+      return new Response('Deliverable with this name already exists', { status: 409 })
     }
 
     // create subreddit and associate it with the user
@@ -37,6 +37,8 @@ export async function POST(req: Request) {
         },
       },
     });
+
+    console.log(deliverable.name)
 
     return new Response(deliverable.name)
   } catch (error) {
