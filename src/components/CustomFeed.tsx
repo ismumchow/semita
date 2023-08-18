@@ -13,12 +13,22 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 
-const CustomFeed = async () => {
-  const session = await getAuthSession();
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 
+const CustomFeed = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+})  => {
+  const session = await getAuthSession();  
   // only rendered if session exists, so this will not happen
   if (!session) return notFound();
-
+  
   const user = await db.user.findUnique({
     where: {
       id: session.user.id,
@@ -35,43 +45,57 @@ const CustomFeed = async () => {
     },
   });
 
+
   return (
-    <div className="flex flex-col  p-2">
-      <div className="px-8 py-2 bg-white rounded-3xl shadow-md shadow-slate-300">
+    <div className="flex flex-col ">
+      <div>
         {user?.followed.length ? (
-          <Table>
-            <TableCaption>A list of your followed deliverables.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>ID</TableHead>
-                <TableHead>Creator</TableHead>
-                <TableHead>Created At</TableHead> {/* New Table Head */}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {user.followed.map((deliverable) => (
-                <TableRow key={deliverable.id}>
-                  <TableCell className="text-lg">
-                    <Link href={`/deliverable/${deliverable.name}`}>
-                      <div className="font-semibold text-blue-900 ">{deliverable.name}</div>
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-lg">
-                    <Link href={`/deliverable/view-only/${deliverable.id}`}> 
-                    {deliverable.id}
-                    </Link>
-                    </TableCell>
-                  <TableCell className="text-lg">{deliverable.creator?.name?.split(" ")[0] || "Unknown"}</TableCell>
-                 <TableCell className="text-lg">{format(deliverable.createdAt, 'MMMM d, yyyy')}</TableCell>
+          <Card>
+            <Table>
+              <TableCaption className="text-blue-300">A list of your followed deliverables.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="pt-2 pl-4">Name</TableHead>
+                  <TableHead className="pt-2 pl-4">ID</TableHead>
+                  <TableHead className="pt-2 pl-4">Creator</TableHead>
+                  <TableHead className="pt-2 pl-4">Created At</TableHead> {/* New Table Head */}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {user.followed.map((deliverable) => (
+                  <TableRow key={deliverable.id}>
+                    <TableCell className="text-lg">
+                      <Link href={`/deliverable/${deliverable.name}`}>
+                        <div className=" text-blue-900 ">
+                          {deliverable.name}
+                        </div>
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-lg">
+                      <Link href={`/deliverable/view-only/${deliverable.id}`}>
+                        {deliverable.id}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-lg">
+                      {deliverable.creator?.name?.split(" ")[0] || "Unknown"}
+                    </TableCell>
+                    <TableCell className="text-lg">
+                      {format(deliverable.createdAt, "MMMM d, yyyy")}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
         ) : (
-          <p className="text-gray-500 text-md font-light pl-4">
-            You are not following any deliverables yet.
-          </p>
+          <Card>
+            <CardHeader>
+              <CardTitle>No Deliverables Found</CardTitle>
+              <CardDescription>
+                You haven&apos;t followed any deliverables yet.
+              </CardDescription>
+            </CardHeader>
+          </Card>
         )}
       </div>
     </div>

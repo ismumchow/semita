@@ -8,16 +8,25 @@ import { useCustomToasts } from "@/hooks/use-custom-toasts";
 import { toast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { DeliverableNamePayload } from "@/lib/validators/deliverable";
 
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 
 interface DeliverableCreateProps {
   deliverableName: Deliverable["name"];
   deliverableId: Deliverable["id"];
 }
 
-const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, deliverableId }) => {
+const DeliverableCreate: FC<DeliverableCreateProps> = ({
+  deliverableName,
+  deliverableId,
+}) => {
   const [input, setInput] = useState<string>("");
   const [statusInput, setStatusInput] = useState<string>("");
   const [newItems, setNewItems] = useState<string[]>([]);
@@ -25,7 +34,6 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [itemsPushed, setItemsPushed] = useState<boolean>(false);
   const router = useRouter();
-
 
   const { loginToast } = useCustomToasts();
 
@@ -36,10 +44,13 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
         deliverableItems: newItems,
         deliverableStatuses: newStatuses,
       };
-      const { data } = await axios.post(`/api/deliverable/${deliverableId}`, payload);
+      const { data } = await axios.post(
+        `/api/deliverable/${deliverableId}`,
+        payload
+      );
       return data as string;
     },
-    onError: (err: { response: { status: number; }; }) => {
+    onError: (err: { response: { status: number } }) => {
       if (err instanceof AxiosError) {
         if (err.response?.status === 409) {
           return toast({
@@ -73,7 +84,6 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
     },
   });
 
-
   const handleAdd = () => {
     setNewItems([...newItems, input]);
     setInput("");
@@ -93,34 +103,49 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-5">
+    <Card>
       {!itemsPushed ? (
         <>
-          <div className="bg-white  rounded-lg p-5">
+          <div className="bg-white rounded-lg p-5">
             {!isAdding ? (
-              <div className="flex flex-col items-center justify-center py-5 space-y-4">
-                <p className="text-xl font-medium text-gray-700 text-center">
-                  No items in <span className="text-blue-400">{deliverableName}</span>, yet.
-                  Be the first to add one!
-                </p>
-                <Button
-                  onClick={() => setIsAdding(true)}
-                  variant="default"
-                  className="mt-4">
-                  Add an item
-                </Button>
+              <div>
+                <CardHeader>
+                  <CardTitle>
+                    No items in{" "}
+                    <span className="text-blue-400">{deliverableName}</span>,
+                    yet.
+                  </CardTitle>
+                  <CardDescription>Be the first to add one!</CardDescription>
+                </CardHeader>
+                <div className="flex flex-col justify-center">
+                  <Button
+                    onClick={() => setIsAdding(true)}
+                    variant="default"
+                    className="mt-4 ml-4 mx-12 bg-transparent border-2 text-green-300 border-green-300 hover:bg-green-500 hover:text-white">
+                    Add an item
+                  </Button>
+                </div>
               </div>
             ) : (
               <div>
+                <CardHeader>
+                  <CardTitle>
+                    Add items to{" "}
+                    <span className="text-blue-400">{deliverableName}</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Add items to the deliverable.
+                  </CardDescription>
+                </CardHeader>
                 {newItems.map((item, index) => (
                   <div
-                    className={`flex justify-between items-center py-2 ${
+                    className={`flex justify-between items-center py-2 px-4  ${
                       index !== newItems.length - 1
                         ? "border-b border-gray-200"
                         : ""
                     }`}
                     key={index}>
-                    <p className="text-xl font-medium text-gray-700 flex-grow pl-2">
+                    <p className="text text-muted-foreground ml-6">
                       {item}
                     </p>
                     <Trash
@@ -129,7 +154,7 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
                     />
                   </div>
                 ))}
-                <div className="flex justify-between items-center mt-2">
+                <div className="flex justify-between items-center mt-2 ml-2 p-2">
                   <Input
                     placeholder="Enter item name"
                     value={input}
@@ -155,19 +180,26 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
         </>
       ) : (
         <>
-          <div>
-            <h2 className="text-xl font-medium text-gray-700 text-center mb-5">
-              Add statuses to the deliverable!
-            </h2>
+          <div className="px-4">
+            <CardHeader>
+              <CardTitle>
+                Add statuses to{" "}
+                <span className="text-blue-400">{deliverableName}</span>
+              </CardTitle>
+              <CardDescription>
+                Add statuses to the deliverable.
+              </CardDescription>
+            </CardHeader>
+
             {newStatuses.map((status, index) => (
               <div
-                className={`flex justify-between items-center py-2 ${
+                className={`flex justify-between items-center py-2 px-2 ${
                   index !== newStatuses.length - 1
                     ? "border-b border-gray-200"
                     : ""
                 }`}
                 key={index}>
-                <p className="text-xl font-medium text-gray-700 flex-grow pl-2">
+                 <p className="text text-muted-foreground ml-6">
                   {status}
                 </p>
                 <Trash
@@ -176,7 +208,7 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
                 />
               </div>
             ))}
-            <div className="flex justify-between items-center mt-2">
+            <div className="flex justify-between items-center mt-2 p-4">
               <Input
                 placeholder="Enter status"
                 value={statusInput}
@@ -191,13 +223,16 @@ const DeliverableCreate: FC<DeliverableCreateProps> = ({ deliverableName, delive
             </div>
           </div>
           {newStatuses.length >= 1 && (
-            <div className="flex justify-center mt-5">
-              <Button onClick={ () => createDeliverable()} variant={"green"}> Finish Deliverable </Button>
+            <div className="flex justify-center mt-5 mb-2">
+              <Button onClick={() => createDeliverable()} variant={"green"}>
+                {" "}
+                Finish Deliverable{" "}
+              </Button>
             </div>
           )}
         </>
       )}
-    </div>
+    </Card>
   );
 };
 

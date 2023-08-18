@@ -33,19 +33,19 @@ const page = async ({ params }: pageProps) => {
       <Card className="mb-4">
         <CardHeader>
           <CardTitle>
-           These are the Deliverable items in :{" "}
-            <span className="text-blue-500"> {deliverable.name} </span>
+            These are the Deliverable items in :
+            <span className="text-blue-500">{deliverable.name}</span>
           </CardTitle>
           <CardDescription>
-            Something wrong? Contact{" "} {deliverable.creator.name}
+            Something wrong? Contact {deliverable.creator.name}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {deliverable.Items.map((item, index) => (
-            <div key={index} className="flex items-center justify-between space-x-4">
-              <p className=" leading-none text-gray-700 pl-4 ">
-                {item.name}
-              </p>
+            <div
+              key={index}
+              className="flex items-center justify-between space-x-4">
+              <p className=" leading-none text-gray-700 pl-4 ">{item.name}</p>
               <div className="bg-gray-200 px-2 py-1 rounded-lg">
                 {item.status}
               </div>

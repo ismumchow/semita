@@ -1,10 +1,9 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/Button";
 import { Icons } from "./Icons";
 import UserAccountNav from "./UserAccountNav";
-import { Input } from "./Input";
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -15,7 +14,7 @@ const Navbar = async () => {
 
         <Link href="/" className="flex gap-2 items-center">
           <Icons.semita />
-          <p className="hidden text-rose-900 text-2xl md:block font-bold"> Semita </p>
+          <p className="hidden text-blue-800 text-2xl md:block"> Kothai </p>
         </Link>
 
         {/* actions */}

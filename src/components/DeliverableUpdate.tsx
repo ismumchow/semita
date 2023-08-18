@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Item, Status } from "@prisma/client";
 import { toast } from "@/hooks/use-toast";
 import { useCustomToasts } from "@/hooks/use-custom-toasts";
-import { DeliverableDeletePayload, DeliverableUpdatePayload } from "@/lib/validators/deliverable";
+import { DeliverableUpdatePayload } from "@/lib/validators/deliverable";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";

@@ -1,16 +1,22 @@
-import { getAuthSession } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { notFound } from 'next/navigation'
-import LargeHeading from './ui/LargeHeading'
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+
 
 const DefaultFeed = async () => {
 
   return (
-  <div className='container border-2 roudned-lg'> 
-    <LargeHeading> 
-      No deliverables yet!
-    </LargeHeading>
-  </div>
+    <Card>
+    <CardHeader>
+      <CardTitle> You aren&apos;t following any deliverables </CardTitle>
+      <CardDescription>
+        Create a deliverable or follow one to get started!
+      </CardDescription>
+    </CardHeader>
+  </Card>
      )
 }
 
